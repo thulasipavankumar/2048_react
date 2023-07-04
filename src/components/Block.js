@@ -1,4 +1,4 @@
 const Block = ({element}) => {
-return (<div className="column tile" >{element}</div>)
+return (<div className="column  box" >{element}</div>)
 }
 export default Block
