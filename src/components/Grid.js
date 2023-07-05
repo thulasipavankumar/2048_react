@@ -5,58 +5,49 @@ import Row from "./Row"
 
 import React from "react";
 
-const Grid = ({ gridMatrix }) => {
-    const [gridData, setgridData] = useState([[0, 2, 2, 2], [2, 2, 0, 0], [2, 0, 2, 2], [0, 0, 0, 2]])
-    const loadGrid = () => {
-        if(isMatrixFull(gridData)){
-            return <ErrorMessage message={"Grid is full"}></ErrorMessage>
-        }
-        const toReturn = gridData.map((row, index) => {
-            return <Row rowData={row} key={'row-'+index}></Row>
-        })
-        return toReturn
-    }
-    const isValidateGrid = () => {
+const Grid = ({  }) => {
+    const [gridData, setgridData] = useState([[2, 0, 0, 0], [0, 2, 0, 0], [0,0,0,0], [0, 0, 0, 0]])
+    
+    const isValidGrid = () => {
         return true;
     }
-    const introduceNewElementToGrid = (matrix) => {
+    const getRandomNumArr = (length) => {
         let foo=[]
-        for (let i = 0; i < matrix.length; i++) {
+        for (let i = 0; i < length; i++) {
             foo.push(i);
         }
-        
-    let elementInserted = false;
-
-        return matrix;
+        foo = foo.sort(() => Math.random() - 0.5);
+        return foo;
+    }
+    const introduceNewElementToGrid = (matrix) => {
+        let duplicate = matrix.map(x=>x.map(y=>y));
+        let rows = getRandomNumArr(duplicate.length)
+        for(let i=0;i<rows.length;i++){
+            let randomRow = rows[i];
+            let columns = getRandomNumArr(duplicate[randomRow].length)
+            for(let j=0;j<columns.length;j++){
+                let randomCol = columns[j]
+                if(duplicate[randomRow][randomCol]==0){
+                    duplicate[randomRow][randomCol]=2
+                    return duplicate
+                }
+            } 
+        }        
+        return duplicate;
     }
     const isMatrixFull = (matrix) => {
-        for(let i=0;i<matrix.length;i++){
-            for(let j=0;i<matrix.length;j++){
-                if(matrix[i][j]===0){
-                    return false;
-                }
-            }
-        }
+       
+         for(let i=0;i<matrix.length;i++){
+             for(let j=0;j<matrix[i].length;j++){
+                 if(matrix[i][j]===0){
+                     return false;
+                 }
+
+             }
+         }
         return true;
     }
-    // ArrowUp ArrowLeft ArrowRight ArrowDown
-    React.useEffect(() => {
-        window.addEventListener('keydown', (event) => {
-            // console.log(`key pressed ${event.key} ${event.code}`)
-            switch (event.key) {
-                case 'ArrowUp': setgridData(collapseToTop(gridData))
-                let withNewelement=introduceNewElementToGrid(gridData)
-                console.log(withNewelement)
-                    break;
-                case 'ArrowLeft': setgridData(collapseToLeft(gridData));
-                    break;
-                case 'ArrowRight': setgridData(collapseToRight(gridData));
-                    break;
-                case 'ArrowDown': setgridData(collapseToBottom(gridData));
-                    break;
-            }
-        });
-    });
+
     const reduceTheArrayToLeft = (arr) => {
         let filteredArr = arr.filter(ele => ele !== 0)
         let temparr = [];
@@ -74,6 +65,8 @@ const Grid = ({ gridMatrix }) => {
         return temparr
     }
     const collapseToLeft = (matrix) => {
+        
+        matrix=gridData
         return (matrix.map((eachRow) => {
             let resultArr = reduceTheArrayToLeft(eachRow)   
             return resultArr.concat(Array(eachRow.length - resultArr.length).fill(0))
@@ -85,13 +78,8 @@ const Grid = ({ gridMatrix }) => {
             return Array(eachRow.length - resultArr.length).fill(0).concat(resultArr.reverse())
         }));
     }
-    const rotateMatrixToRight = (matrix) => {
-        return matrix.length > 1 ? matrix[0].map((val, index) => matrix.map(row => row[index]).reverse()) : matrix
-    }
-    const rotateMatrixToLeft = (matrix) => {
-        return matrix.length > 1 ? matrix[0].map((val, index) => matrix.map(row => row[row.length - 1 - index])) : matrix
-    }
     const collapseToTop = (matrix) => {
+
         let newArray = rotateMatrixToRight(matrix)
         let resultArr = newArray.map((eachRow) => {
             let resultArr = reduceTheArrayToLeft(eachRow.reverse())
@@ -108,13 +96,62 @@ const Grid = ({ gridMatrix }) => {
         return (rotateMatrixToLeft(resultArr))
 
     }
-    const printRow = (rowData) => {
-        console.log(rowData)
+    const rotateMatrixToRight = (matrix) => {
+        return matrix.length > 1 ? matrix[0].map((val, index) => matrix.map(row => row[index]).reverse()) : matrix
     }
-    if (!isValidateGrid()) {
-        return <ErrorMessage message={"Invalid data"} />
+    const rotateMatrixToLeft = (matrix) => {
+        return matrix.length > 1 ? matrix[0].map((val, index) => matrix.map(row => row[row.length - 1 - index])) : matrix
     }
-    return <div>{loadGrid(gridData)}</div>
+
+   // /*
+        // ArrowUp ArrowLeft ArrowRight ArrowDown
+   const onKeyPressed = (event) => {
+    let data 
+            // console.log(`key pressed ${event.key} ${event.code}`)
+            switch (event.key) {
+                case 'ArrowUp':  data = (collapseToTop(gridData));
+                setgridData(introduceNewElementToGrid(data))
+                    break;
+                case 'ArrowLeft': data =(collapseToLeft(gridData));
+                setgridData(introduceNewElementToGrid(data))
+                    break;
+                case 'ArrowRight': data =(collapseToRight(gridData));
+                setgridData(introduceNewElementToGrid(data))
+                    break;
+                case 'ArrowDown': data =(collapseToBottom(gridData));
+                setgridData(introduceNewElementToGrid(data))
+                    break;
+                default:
+                    break;
+            }
+       
+    };
+ //*/
+    const loadGrid = (matrix) => {
+        
+        if(isMatrixFull(matrix)){
+            return <div>
+                <ErrorMessage message={"Grid is full"}></ErrorMessage>
+                {matrix.map((row, index) => {
+            return <><Row rowData={row} key={'row-'+index}></Row></>
+        })}
+                </div>
+        }
+       
+        const toReturn = matrix.map((row, index) => {
+            return <><Row rowData={row} key={'row-'+index}></Row></>
+        })
+        
+        return toReturn
+    }
+    const returnInValidData = () => {
+        
+        return <ErrorMessage message={"Invalid data"}></ErrorMessage>
+
+    }
+    //isValidGrid()?loadGrid(gridData):<ErrorMessage message={"Invalid data"} />
+    return <div tabIndex={-1} onKeyDown={onKeyPressed}>{ isValidGrid()?loadGrid(gridData):returnInValidData()}</div>
+     
 }
 
 export default Grid
