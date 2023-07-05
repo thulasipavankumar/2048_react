@@ -102,7 +102,18 @@ const Grid = ({  }) => {
     const rotateMatrixToLeft = (matrix) => {
         return matrix.length > 1 ? matrix[0].map((val, index) => matrix.map(row => row[row.length - 1 - index])) : matrix
     }
-
+    const areArraysEqual=(src,des)=>{
+        if(src.length!==des.length){
+            return false;
+        }
+        for(let i=0;i<src.length;i++){
+            for(let j=0;j<src[i].length;j++){
+                if(src[i][j].length!==des[i][j].length || src[i][j]!==des[i][j])
+                    return false;   
+            }
+        }
+        return true;
+    }
    // /*
         // ArrowUp ArrowLeft ArrowRight ArrowDown
    const onKeyPressed = (event) => {
@@ -110,15 +121,19 @@ const Grid = ({  }) => {
             // console.log(`key pressed ${event.key} ${event.code}`)
             switch (event.key) {
                 case 'ArrowUp':  data = (collapseToTop(gridData));
+                if(!areArraysEqual(data,gridData))
                 setgridData(introduceNewElementToGrid(data))
                     break;
                 case 'ArrowLeft': data =(collapseToLeft(gridData));
+                if(!areArraysEqual(data,gridData))
                 setgridData(introduceNewElementToGrid(data))
                     break;
                 case 'ArrowRight': data =(collapseToRight(gridData));
+                if(!areArraysEqual(data,gridData))
                 setgridData(introduceNewElementToGrid(data))
                     break;
                 case 'ArrowDown': data =(collapseToBottom(gridData));
+                if(!areArraysEqual(data,gridData))
                 setgridData(introduceNewElementToGrid(data))
                     break;
                 default:
