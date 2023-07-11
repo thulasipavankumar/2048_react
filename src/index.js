@@ -7,7 +7,7 @@ import './index.css'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   
-    <Grid className="grid"/>
+    <Grid className="center "/>
 
 );
 
