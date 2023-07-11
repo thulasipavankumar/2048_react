@@ -166,7 +166,7 @@ const Grid = ({  }) => {
                 return doActions('SwipeLeft')
         }
         if (isRightSwipeY ){
-            if(Math.abs(distanceY)>minSwipeDistance && distanceY>0)
+            if(Math.abs(distanceY)>minSwipeDistance && distanceY<0)
                 return doActions('SwipeDown')
             else 
                 return doActions('SwipeRight')
